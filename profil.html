@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<!--
+  profil.html — Page de profil utilisateur
+  ============================================================
+  Permet à l'étudiant de consulter et modifier son profil.
+  
+  Sections / onglets :
+  1. Informations personnelles (prénom, nom, email, université)
+  2. Sécurité (changement de mot de passe)
+  3. Mes annonces (grille des annonces publiées)
+  4. Danger zone (suppression du compte)
+  
+  Protégé : redirige vers login.html si non connecté.
+  Scripts : main.js, annonces.js, profil.js
+  ============================================================
+-->
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mon profil — AnnonceRDC</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/forms.css" />
+  <link rel="stylesheet" href="./css/dashboard.css" />
+
+  <style>
+    /* Styles spécifiques à la page profil */
+    .profil-page {
+      margin-top: var(--navbar-height);
+      min-height: calc(100vh - var(--navbar-height));
+      background: var(--gray-50);
+    }
+
+    .profil-hero {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      padding: var(--space-12) 0 var(--space-16);
+      text-align: center;
+      color: white;
+      position: relative;
+    }
+
+    .profil-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: var(--gray-50);
+      clip-path: ellipse(55% 100% at 50% 100%);
+    }
+
+    .profil-avatar-large {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--secondary) 0%, #e6b800 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-size: 2.5rem;
+      font-weight: 900;
+      margin: 0 auto var(--space-4);
+      border: 4px solid rgba(255,255,255,0.3);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    .profil-name-display {
+      font-size: var(--font-size-2xl);
+      font-weight: 900;
+      color: white;
+      margin-bottom: var(--space-2);
+    }
+
+    .profil-info-display {
+      font-size: var(--font-size-sm);
+      color: rgba(255,255,255,0.8);
+      margin-bottom: var(--space-1);
+    }
+
+    /* Onglets du profil */
+    .profil-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--gray-200);
+      background: var(--white);
+      overflow-x: auto;
+    }
+
+    .profil-tab {
+      padding: var(--space-4) var(--space-6);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--gray-500);
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--transition-fast);
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      font-family: var(--font-family);
+      margin-bottom: -2px;
+    }
+
+    .profil-tab:hover {
+      color: var(--primary);
+    }
+
+    .profil-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* Panneaux des onglets */
+    .profil-panel {
+      display: none;
+      padding: var(--space-8) 0;
+    }
+
+    .profil-panel.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    /* Section de zone de danger */
+    .danger-zone {
+      background: white;
+      border: 2px solid rgba(206,17,38,0.2);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      margin-top: var(--space-6);
+    }
+
+    .danger-zone-title {
+      font-size: var(--font-size-base);
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: var(--space-3);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .danger-zone-desc {
+      font-size: var(--font-size-sm);
+      color: var(--gray-600);
+      margin-bottom: var(--space-4);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      
+      <a href="./index.html" class="navbar-brand">
+        <div class="logo-icon">★</div>
+        <div class="logo-text">
+          <span class="brand-name">AnnonceRDC</span>
+          <span class="brand-tagline">La voix des étudiants congolais</span>
+        </div>
+      </a>
+
+      <div class="navbar-nav">
+        <a href="./index.html" class="nav-link">🏠 Accueil</a>
+        <a href="./dashboard.html" class="nav-link">📊 Dashboard</a>
+        <a href="./annonce.html" class="nav-link">+ Publier</a>
+      </div>
+
+      <div class="navbar-actions hidden" id="navUserMenu">
+        <div style="display:flex;align-items:center;gap:8px;font-size:0.875rem;font-weight:600;color:var(--gray-700);">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;" id="navAvatar">?</div>
+          <span id="navUserName">Mon compte</span>
+        </div>
+        <button class="btn btn-ghost btn-sm" data-action="logout">Déconnexion</button>
+      </div>
+
+      <div class="navbar-actions" id="navAuthButtons">
+        <a href="./login.html" class="btn btn-ghost btn-sm">Connexion</a>
+        <a href="./register.html" class="btn btn-primary btn-sm">S'inscrire</a>
+      </div>
+
+      <button class="navbar-toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="navbar-mobile" id="mobileMenu">
+    <a href="./index.html" class="nav-link">🏠 Accueil</a>
+    <a href="./dashboard.html" class="nav-link">📊 Tableau de bord</a>
+    <a href="./annonce.html" class="nav-link">+ Publier</a>
+    <div class="navbar-mobile-actions">
+      <button class="btn btn-danger btn-full" data-action="logout">Se déconnecter</button>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       PAGE PROFIL
+  ============================================================ -->
+  <div class="profil-page">
+
+    <!-- En-tête avec avatar et nom -->
+    <div class="profil-hero">
+      <div class="container">
+        <div class="profil-avatar-large" id="profilAvatar">?</div>
+        <h1 class="profil-name-display" id="profilFullName">Chargement…</h1>
+        <div class="profil-info-display" id="profilEmail"></div>
+        <div class="profil-info-display" id="profilUniversite"></div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:12px;flex-wrap:wrap;">
+          <span style="font-size:0.8125rem;color:rgba(255,255,255,0.7);" id="profilAnnee"></span>
+          <span style="font-size:0.8125rem;color:rgba(255,255,255,0.7);">•</span>
+          <span style="font-size:0.8125rem;color:rgba(255,255,255,0.7);">
+            <strong id="profilStatAnnonces">0</strong> annonce(s) publiée(s)
+          </span>
+          <span style="font-size:0.8125rem;color:rgba(255,255,255,0.7);">•</span>
+          <span style="font-size:0.8125rem;color:rgba(255,255,255,0.7);">
+            Membre depuis <strong id="profilMemberSince">…</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation par onglets -->
+    <div style="background:var(--white);box-shadow:var(--shadow-sm);position:sticky;top:var(--navbar-height);z-index:100;">
+      <div class="container" style="padding-top:0;padding-bottom:0;">
+        <div class="profil-tabs">
+          <button class="profil-tab active" data-profil-tab="informations">
+            👤 Mes informations
+          </button>
+          <button class="profil-tab" data-profil-tab="securite">
+            🔒 Sécurité
+          </button>
+          <button class="profil-tab" data-profil-tab="annonces">
+            📋 Mes annonces
+          </button>
+          <button class="profil-tab" data-profil-tab="danger">
+            ⚠️ Zone de danger
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenu des onglets -->
+    <div class="container">
+
+      <!-- ============================================================
+           ONGLET 1 : INFORMATIONS PERSONNELLES
+           Formulaire pour modifier les données du profil.
+      ============================================================ -->
+      <div class="profil-panel active" id="profil-panel-informations">
+        <div style="max-width:680px;">
+          
+          <div class="content-block" style="background:var(--white);border-radius:var(--radius-xl);box-shadow:var(--shadow-sm);border:1px solid var(--gray-200);overflow:hidden;">
+            <div class="content-block-header">
+              <h2 class="content-block-title">Mes informations personnelles</h2>
+            </div>
+            <div class="content-block-body">
+
+              <form id="editProfilForm" novalidate>
+
+                <!-- Prénom et Nom -->
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="editPrenom">
+                      Prénom <span class="required">*</span>
+                    </label>
+                    <input type="text" id="editPrenom" class="form-control" autocomplete="given-name" />
+                    <span class="form-error"></span>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="editNom">
+                      Nom <span class="required">*</span>
+                    </label>
+                    <input type="text" id="editNom" class="form-control" autocomplete="family-name" />
+                    <span class="form-error"></span>
+                  </div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                  <label class="form-label" for="editEmail">
+                    Adresse email <span class="required">*</span>
+                  </label>
+                  <div class="input-icon-wrapper">
+                    <span class="input-icon">✉️</span>
+                    <input type="email" id="editEmail" class="form-control" autocomplete="email" />
+                  </div>
+                  <span class="form-error"></span>
+                </div>
+
+                <!-- Université -->
+                <div class="form-group">
+                  <label class="form-label" for="editUniversite">
+                    Université / École <span class="required">*</span>
+                  </label>
+                  <select id="editUniversite" class="form-control">
+                    <option value="">— Sélectionnez —</option>
+                    <!-- Rempli par profil.js -->
+                  </select>
+                  <span class="form-error"></span>
+                </div>
+
+                <!-- Année d'étude -->
+                <div class="form-group">
+                  <label class="form-label" for="editAnnee">
+                    Année d'étude
+                  </label>
+                  <select id="editAnnee" class="form-control">
+                    <option value="">— Sélectionnez —</option>
+                    <option value="1">1ère année</option>
+                    <option value="2">2ème année</option>
+                    <option value="3">3ème année</option>
+                    <option value="4">4ème année</option>
+                    <option value="5">5ème année</option>
+                    <option value="master">Master / DEA</option>
+                    <option value="doctorat">Doctorat / PhD</option>
+                  </select>
+                </div>
+
+                <div class="divider"></div>
+
+                <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                  <button type="submit" id="submitEditProfilBtn" class="btn btn-primary">
+                    ✅ Enregistrer les modifications
+                  </button>
+                  <a href="./dashboard.html" class="btn btn-ghost">Retour au dashboard</a>
+                </div>
+
+              </form>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- ============================================================
+           ONGLET 2 : SÉCURITÉ (Changement de mot de passe)
+      ============================================================ -->
+      <div class="profil-panel" id="profil-panel-securite">
+        <div style="max-width:680px;">
+
+          <div class="content-block" style="background:var(--white);border-radius:var(--radius-xl);box-shadow:var(--shadow-sm);border:1px solid var(--gray-200);overflow:hidden;">
+            <div class="content-block-header">
+              <h2 class="content-block-title">🔒 Changer mon mot de passe</h2>
+            </div>
+            <div class="content-block-body">
+
+              <form id="changePasswordForm" novalidate>
+
+                <!-- Mot de passe actuel -->
+                <div class="form-group">
+                  <label class="form-label" for="currentPassword">
+                    Mot de passe actuel <span class="required">*</span>
+                  </label>
+                  <div class="input-icon-wrapper" style="position:relative;">
+                    <span class="input-icon">🔒</span>
+                    <input type="password" id="currentPassword" class="form-control" placeholder="Votre mot de passe actuel" autocomplete="current-password" />
+                    <button type="button" class="password-toggle" id="toggle_currentPassword" title="Afficher">👁️</button>
+                  </div>
+                  <span class="form-error"></span>
+                </div>
+
+                <!-- Nouveau mot de passe -->
+                <div class="form-group">
+                  <label class="form-label" for="newPassword">
+                    Nouveau mot de passe <span class="required">*</span>
+                  </label>
+                  <div class="input-icon-wrapper" style="position:relative;">
+                    <span class="input-icon">🔑</span>
+                    <input type="password" id="newPassword" class="form-control" placeholder="Au moins 6 caractères" autocomplete="new-password" />
+                    <button type="button" class="password-toggle" id="toggle_newPassword" title="Afficher">👁️</button>
+                  </div>
+                  <span class="form-error"></span>
+                  <!-- Indicateur de force -->
+                  <div class="password-strength" style="margin-top:8px;">
+                    <div class="strength-bar">
+                      <div class="strength-fill" id="newPwdStrengthFill"></div>
+                    </div>
+                    <span class="strength-text" id="newPwdStrengthText"></span>
+                  </div>
+                </div>
+
+                <!-- Confirmation du nouveau mot de passe -->
+                <div class="form-group">
+                  <label class="form-label" for="confirmNewPassword">
+                    Confirmer le nouveau mot de passe <span class="required">*</span>
+                  </label>
+                  <div class="input-icon-wrapper" style="position:relative;">
+                    <span class="input-icon">🔑</span>
+                    <input type="password" id="confirmNewPassword" class="form-control" placeholder="Retapez le nouveau mot de passe" autocomplete="new-password" />
+                    <button type="button" class="password-toggle" id="toggle_confirmNewPassword" title="Afficher">👁️</button>
+                  </div>
+                  <span class="form-error"></span>
+                </div>
+
+                <div class="divider"></div>
+
+                <button type="submit" id="submitChangePasswordBtn" class="btn btn-primary">
+                  🔒 Modifier le mot de passe
+                </button>
+
+              </form>
+
+            </div>
+          </div>
+
+          <!-- Conseil de sécurité -->
+          <div style="background:var(--primary-light);border:1px solid rgba(0,61,165,0.15);border-radius:var(--radius-lg);padding:16px;margin-top:16px;display:flex;gap:12px;align-items:flex-start;">
+            <span style="font-size:1.25rem;flex-shrink:0;">💡</span>
+            <div style="font-size:0.875rem;color:var(--primary);">
+              <strong>Conseils pour un mot de passe fort :</strong>
+              Utilisez au moins 8 caractères, mélangez majuscules, minuscules, chiffres et caractères spéciaux.
+              Ne réutilisez pas votre mot de passe d'autres sites.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- ============================================================
+           ONGLET 3 : MES ANNONCES
+      ============================================================ -->
+      <div class="profil-panel" id="profil-panel-annonces">
+        
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+          <h2 style="font-size:1.5rem;font-weight:800;color:var(--gray-900);">📋 Mes annonces publiées</h2>
+          <a href="./annonce.html" class="btn btn-primary">+ Nouvelle annonce</a>
+        </div>
+
+        <!-- Grille des annonces (remplie par profil.js) -->
+        <div class="annonces-grid" id="profilAnnoncesGrid">
+          <div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--gray-400);">
+            <div class="spinner" style="margin:0 auto 12px;"></div>
+            <p>Chargement de vos annonces…</p>
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- ============================================================
+           ONGLET 4 : ZONE DE DANGER
+           Actions irréversibles : suppression du compte
+      ============================================================ -->
+      <div class="profil-panel" id="profil-panel-danger">
+        <div style="max-width:680px;">
+
+          <div class="danger-zone">
+            <div class="danger-zone-title">
+              ⚠️ Zone de danger
+            </div>
+            <div class="danger-zone-desc">
+              Les actions ci-dessous sont <strong>irréversibles</strong>. 
+              Procédez avec prudence.
+            </div>
+
+            <div style="background:var(--white);border:1px solid rgba(206,17,38,0.2);border-radius:var(--radius-lg);padding:20px;">
+              <h3 style="font-size:1rem;font-weight:700;color:var(--gray-900);margin-bottom:8px;">
+                Supprimer mon compte
+              </h3>
+              <p style="font-size:0.875rem;color:var(--gray-600);margin-bottom:16px;">
+                La suppression de votre compte entraîne la suppression définitive 
+                de toutes vos données : informations personnelles, annonces publiées. 
+                Cette action ne peut pas être annulée.
+              </p>
+              <button 
+                class="btn btn-danger btn-sm"
+                onclick="supprimerCompte()"
+              >
+                🗑️ Supprimer définitivement mon compte
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script src="./js/main.js"></script>
+  <script src="./js/annonces.js"></script>
+  <script src="./js/profil.js"></script>
+
+</body>
+</html>

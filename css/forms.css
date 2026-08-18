@@ -1,0 +1,701 @@
+/* ============================================================
+   forms.css — Styles des formulaires
+   S'applique à : login.html, register.html, annonce.html
+   ============================================================
+   
+   Ce fichier contient tous les styles liés aux formulaires :
+   - Pages de connexion et d'inscription
+   - Formulaire de publication d'annonce
+   - Champs de saisie, labels, messages d'erreur
+   - Validation visuelle (succès / erreur)
+   ============================================================ */
+
+
+/* ============================================================
+   MISE EN PAGE DES PAGES FORMULAIRE
+   Les pages de connexion/inscription utilisent un layout
+   centré en deux colonnes (formulaire + image décorative).
+   ============================================================ */
+
+/* Conteneur principal de la page auth */
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;   /* Deux colonnes égales */
+}
+
+/* Colonne gauche — formulaire */
+.auth-form-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-12) var(--space-8);
+  background: var(--white);
+  min-height: 100vh;
+}
+
+/* Colonne droite — image/décoration */
+.auth-deco-col {
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    #0055cc 45%,
+    var(--accent) 100%
+  );
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-12);
+  color: var(--white);
+  text-align: center;
+}
+
+/* Motif décoratif sur la colonne droite */
+.auth-deco-col::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255,205,0,0.15) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.auth-deco-col::after {
+  content: '';
+  position: absolute;
+  bottom: -20%;
+  left: -10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.auth-deco-content {
+  position: relative;
+  z-index: 1;
+}
+
+.auth-deco-icon {
+  font-size: 5rem;
+  margin-bottom: var(--space-6);
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.auth-deco-title {
+  font-size: var(--font-size-3xl);
+  font-weight: 900;
+  color: var(--white);
+  margin-bottom: var(--space-4);
+  line-height: 1.2;
+}
+
+.auth-deco-title span {
+  color: var(--secondary);
+}
+
+.auth-deco-desc {
+  font-size: var(--font-size-lg);
+  color: rgba(255,255,255,0.85);
+  max-width: 380px;
+  line-height: 1.7;
+  margin-bottom: var(--space-8);
+}
+
+/* Liste des avantages sur la colonne déco */
+.auth-deco-features {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  text-align: left;
+  width: 100%;
+  max-width: 360px;
+}
+
+.auth-deco-feature {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: rgba(255,255,255,0.1);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.auth-deco-feature .feat-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.auth-deco-feature .feat-text {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: rgba(255,255,255,0.9);
+}
+
+/* Boîte du formulaire */
+.auth-box {
+  width: 100%;
+  max-width: 440px;
+}
+
+/* Lien retour vers l'accueil */
+.auth-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--gray-500);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-8);
+  transition: var(--transition-fast);
+}
+
+.auth-back-link:hover {
+  color: var(--primary);
+}
+
+/* Logo dans le formulaire */
+.auth-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-8);
+  text-decoration: none;
+}
+
+.auth-logo .logo-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary);
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.auth-logo .logo-name {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--primary);
+}
+
+/* Titre du formulaire */
+.auth-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--gray-900);
+  margin-bottom: var(--space-2);
+}
+
+.auth-subtitle {
+  font-size: var(--font-size-base);
+  color: var(--gray-500);
+  margin-bottom: var(--space-8);
+}
+
+
+/* ============================================================
+   COMPOSANTS DE FORMULAIRE
+   Styles pour chaque élément de formulaire.
+   ============================================================ */
+
+/* Groupe de champ (label + input + message) */
+.form-group {
+  margin-bottom: var(--space-5);
+}
+
+/* Label */
+.form-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: var(--space-2);
+}
+
+.form-label .required {
+  color: var(--accent);   /* Astérisque rouge pour les champs obligatoires */
+  margin-left: 2px;
+}
+
+/* Champ de saisie (input, select, textarea) */
+.form-control {
+  display: block;
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+  color: var(--gray-800);
+  background: var(--white);
+  border: 2px solid var(--gray-300);
+  border-radius: var(--radius);
+  transition: var(--transition-fast);
+  appearance: none;   /* Supprime le style par défaut du navigateur */
+  -webkit-appearance: none;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0,61,165,0.12);
+  background: var(--white);
+}
+
+.form-control::placeholder {
+  color: var(--gray-400);
+}
+
+/* État d'erreur du champ */
+.form-control.is-error {
+  border-color: var(--accent);
+  background: #fff8f8;
+}
+
+.form-control.is-error:focus {
+  box-shadow: 0 0 0 3px rgba(206,17,38,0.12);
+}
+
+/* État de succès du champ */
+.form-control.is-success {
+  border-color: var(--success);
+  background: #f0fff4;
+}
+
+/* Select personnalisé */
+select.form-control {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236c757d' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+
+/* Textarea */
+textarea.form-control {
+  resize: vertical;           /* Redimensionnable verticalement */
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+/* Input avec icône */
+.input-icon-wrapper {
+  position: relative;
+}
+
+.input-icon-wrapper .form-control {
+  padding-left: var(--space-10);   /* Espace pour l'icône */
+}
+
+.input-icon-wrapper .input-icon {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray-400);
+  pointer-events: none;
+  font-style: normal;
+  font-size: 1rem;
+}
+
+/* Bouton afficher/masquer mot de passe */
+.password-toggle {
+  position: absolute;
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--gray-400);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: var(--space-1);
+  transition: var(--transition-fast);
+  font-style: normal;
+}
+
+.password-toggle:hover {
+  color: var(--gray-700);
+}
+
+/* Message d'erreur sous le champ */
+.form-error {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: var(--font-size-xs);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* Message d'aide sous le champ */
+.form-hint {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: var(--font-size-xs);
+  color: var(--gray-500);
+}
+
+/* Rangée de deux champs côte à côte */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+/* Checkbox et radio */
+.form-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  cursor: pointer;
+}
+
+.form-check input[type="checkbox"],
+.form-check input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--gray-400);
+  border-radius: var(--radius-sm);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: var(--transition-fast);
+  position: relative;
+  background: var(--white);
+}
+
+.form-check input[type="checkbox"]:checked,
+.form-check input[type="radio"]:checked {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+/* Coche dans la checkbox */
+.form-check input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.form-check-label {
+  font-size: var(--font-size-sm);
+  color: var(--gray-700);
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.form-check-label a {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+
+/* ============================================================
+   BARRE DE FORCE DU MOT DE PASSE
+   Visuel pour indiquer la robustesse du mot de passe.
+   ============================================================ */
+.password-strength {
+  margin-top: var(--space-2);
+}
+
+.strength-bar {
+  height: 4px;
+  background: var(--gray-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--space-1);
+}
+
+.strength-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: all 0.3s ease;
+  width: 0%;
+}
+
+.strength-fill.weak   { width: 25%; background: var(--accent); }
+.strength-fill.fair   { width: 50%; background: var(--warning); }
+.strength-fill.good   { width: 75%; background: var(--info); }
+.strength-fill.strong { width: 100%; background: var(--success); }
+
+.strength-text {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+.strength-text.weak   { color: var(--accent); }
+.strength-text.fair   { color: var(--warning); }
+.strength-text.good   { color: var(--info); }
+.strength-text.strong { color: var(--success); }
+
+
+/* ============================================================
+   SÉPARATEUR "OU"
+   Pour séparer les options de connexion.
+   ============================================================ */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: var(--space-6) 0;
+  color: var(--gray-400);
+  font-size: var(--font-size-sm);
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--gray-200);
+}
+
+
+/* ============================================================
+   LIEN BAS DE FORMULAIRE
+   Ex: "Pas encore de compte ? S'inscrire"
+   ============================================================ */
+.auth-footer-link {
+  text-align: center;
+  margin-top: var(--space-6);
+  font-size: var(--font-size-sm);
+  color: var(--gray-600);
+}
+
+.auth-footer-link a {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.auth-footer-link a:hover {
+  text-decoration: underline;
+}
+
+
+/* ============================================================
+   FORMULAIRE DE PUBLICATION D'ANNONCE
+   Page annonce.html — créer ou modifier une annonce
+   ============================================================ */
+.publish-section {
+  background: var(--gray-50);
+  padding: var(--space-12) 0;
+}
+
+/* Carte du formulaire d'annonce */
+.publish-card {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+/* En-tête de la carte */
+.publish-card-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  padding: var(--space-8);
+  color: var(--white);
+}
+
+.publish-card-header h1 {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: var(--space-2);
+}
+
+.publish-card-header p {
+  color: rgba(255,255,255,0.8);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+/* Corps du formulaire */
+.publish-card-body {
+  padding: var(--space-8);
+}
+
+/* Étapes du formulaire */
+.form-steps {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-8);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+  font-weight: 500;
+}
+
+.step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--gray-200);
+  color: var(--gray-600);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.step-item.active .step-num {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.step-item.active {
+  color: var(--primary);
+}
+
+.step-item.done .step-num {
+  background: var(--success);
+  color: var(--white);
+}
+
+.step-divider {
+  flex: 1;
+  height: 1px;
+  background: var(--gray-200);
+  min-width: var(--space-6);
+}
+
+/* Section de détail d'une annonce */
+.annonce-detail {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.annonce-detail-card {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.annonce-detail-header {
+  padding: var(--space-8);
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.annonce-detail-body {
+  padding: var(--space-8);
+}
+
+.annonce-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+  padding: var(--space-5);
+  background: var(--gray-50);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.meta-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.meta-value {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.annonce-contact-box {
+  background: var(--primary-light);
+  border: 2px solid rgba(0,61,165,0.15);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  text-align: center;
+  margin-top: var(--space-6);
+}
+
+.contact-label {
+  font-size: var(--font-size-sm);
+  color: var(--gray-600);
+  margin-bottom: var(--space-2);
+}
+
+.contact-value {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--primary);
+}
+
+
+/* ============================================================
+   RESPONSIVE FORMULAIRES
+   ============================================================ */
+@media (max-width: 768px) {
+  .auth-page {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-deco-col {
+    display: none;   /* Cacher la décoration sur mobile */
+  }
+
+  .auth-form-col {
+    padding: var(--space-8) var(--space-5);
+    justify-content: flex-start;
+    padding-top: calc(var(--navbar-height) + var(--space-8));
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;   /* Champs en colonne sur mobile */
+  }
+
+  .publish-card-header,
+  .publish-card-body {
+    padding: var(--space-6);
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-form-col {
+    padding: var(--space-6) var(--space-4);
+    padding-top: calc(var(--navbar-height) + var(--space-6));
+  }
+
+  .auth-box {
+    max-width: 100%;
+  }
+}

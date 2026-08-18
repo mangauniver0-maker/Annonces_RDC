@@ -1,0 +1,769 @@
+/* ============================================================
+   dashboard.css — Styles du tableau de bord étudiant
+   S'applique à : dashboard.html
+   ============================================================
+   
+   Ce fichier contient tous les styles spécifiques au dashboard :
+   - Layout avec sidebar + contenu principal
+   - Cartes de statistiques
+   - Tableau des annonces personnelles
+   - Formulaire de publication rapide
+   - Navigation latérale
+   ============================================================ */
+
+
+/* ============================================================
+   LAYOUT DASHBOARD
+   Structure en deux colonnes : sidebar + contenu principal
+   ============================================================ */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;   /* Sidebar fixe + contenu flexible */
+  min-height: calc(100vh - var(--navbar-height));
+  margin-top: var(--navbar-height);
+}
+
+/* ============================================================
+   SIDEBAR (Barre latérale de navigation)
+   ============================================================ */
+.sidebar {
+  background: var(--white);
+  border-right: 1px solid var(--gray-200);
+  padding: var(--space-6) 0;
+  position: sticky;         /* Reste visible lors du défilement */
+  top: var(--navbar-height);
+  height: calc(100vh - var(--navbar-height));
+  overflow-y: auto;          /* Défilement si contenu trop long */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Profil dans la sidebar */
+.sidebar-profile {
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  border-bottom: 1px solid var(--gray-100);
+  margin-bottom: var(--space-4);
+}
+
+.sidebar-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  margin-bottom: var(--space-3);
+}
+
+.sidebar-user-name {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 2px;
+}
+
+.sidebar-user-info {
+  font-size: var(--font-size-xs);
+  color: var(--gray-500);
+}
+
+/* Navigation de la sidebar */
+.sidebar-nav {
+  flex: 1;
+  padding: 0 var(--space-3);
+}
+
+.sidebar-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--gray-400);
+  padding: var(--space-4) var(--space-3) var(--space-2);
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-3);
+  border-radius: var(--radius);
+  color: var(--gray-700);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  margin-bottom: 2px;
+  transition: var(--transition-fast);
+  text-decoration: none;
+}
+
+.sidebar-link:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.sidebar-link.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.sidebar-link.active .sidebar-link-icon {
+  color: var(--primary);
+}
+
+.sidebar-link .sidebar-link-icon {
+  font-size: 1.125rem;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+  color: var(--gray-500);
+  font-style: normal;
+}
+
+/* Badge de compteur dans la sidebar */
+.sidebar-badge {
+  margin-left: auto;
+  background: var(--primary);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Bas de la sidebar */
+.sidebar-footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--gray-100);
+  margin-top: auto;
+}
+
+.sidebar-logout {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-3);
+  border-radius: var(--radius);
+  color: var(--accent);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-family);
+}
+
+.sidebar-logout:hover {
+  background: var(--accent-light);
+}
+
+
+/* ============================================================
+   CONTENU PRINCIPAL DU DASHBOARD
+   ============================================================ */
+.dashboard-main {
+  padding: var(--space-8);
+  background: var(--gray-50);
+  overflow-y: auto;
+}
+
+/* En-tête du dashboard */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-8);
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.dashboard-greeting {
+  font-size: var(--font-size-3xl);
+  font-weight: 900;
+  color: var(--gray-900);
+  margin-bottom: var(--space-1);
+}
+
+.dashboard-greeting span {
+  color: var(--primary);
+}
+
+.dashboard-date {
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+}
+
+
+/* ============================================================
+   CARTES DE STATISTIQUES
+   Affichent les chiffres clés de l'utilisateur.
+   ============================================================ */
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-5);
+  margin-bottom: var(--space-8);
+}
+
+/* Carte de stat individuelle */
+.stat-card {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  transition: var(--transition);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  font-style: normal;
+}
+
+/* Couleurs des icônes de stats */
+.stat-card-icon.blue {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.stat-card-icon.yellow {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.stat-card-icon.green {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.stat-card-icon.red {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.stat-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-card-value {
+  font-size: var(--font-size-2xl);
+  font-weight: 900;
+  color: var(--gray-900);
+  line-height: 1;
+  margin-bottom: var(--space-1);
+}
+
+.stat-card-label {
+  font-size: var(--font-size-xs);
+  color: var(--gray-500);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-card-change {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  margin-top: var(--space-2);
+}
+
+.stat-card-change.positive { color: var(--success); }
+.stat-card-change.negative { color: var(--accent); }
+
+
+/* ============================================================
+   SECTION PRINCIPALE DU DASHBOARD
+   Layout en deux colonnes : contenu + panneau latéral
+   ============================================================ */
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+/* Bloc de contenu */
+.content-block {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
+}
+
+.content-block-header {
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--gray-100);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.content-block-title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.content-block-body {
+  padding: var(--space-6);
+}
+
+
+/* ============================================================
+   TABLEAU DES ANNONCES
+   Affiche les annonces de l'utilisateur avec options d'édition.
+   ============================================================ */
+.annonces-table-wrapper {
+  overflow-x: auto;           /* Défilement horizontal sur mobile */
+}
+
+.annonces-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+/* En-têtes du tableau */
+.annonces-table th {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--gray-500);
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200);
+  white-space: nowrap;
+}
+
+/* Cellules du tableau */
+.annonces-table td {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--gray-100);
+  color: var(--gray-700);
+  vertical-align: middle;
+}
+
+.annonces-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Ligne au survol */
+.annonces-table tr:hover td {
+  background: var(--gray-50);
+}
+
+/* Titre de l'annonce dans le tableau */
+.table-title {
+  font-weight: 600;
+  color: var(--gray-900);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Boutons d'action dans le tableau */
+.table-actions {
+  display: flex;
+  gap: var(--space-2);
+  white-space: nowrap;
+}
+
+.btn-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid rgba(0,61,165,0.2);
+  border-radius: var(--radius);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-decoration: none;
+  font-family: var(--font-family);
+}
+
+.btn-edit:hover {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.btn-delete {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  background: var(--accent-light);
+  color: var(--accent);
+  border: 1px solid rgba(206,17,38,0.2);
+  border-radius: var(--radius);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-family: var(--font-family);
+}
+
+.btn-delete:hover {
+  background: var(--accent);
+  color: var(--white);
+}
+
+.btn-view {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  background: var(--gray-100);
+  color: var(--gray-700);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-decoration: none;
+  font-family: var(--font-family);
+}
+
+.btn-view:hover {
+  background: var(--gray-200);
+  color: var(--gray-900);
+}
+
+
+/* ============================================================
+   PANNEAU LATÉRAL DU DASHBOARD (colonne droite)
+   ============================================================ */
+.dashboard-sidebar-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* Carte de publication rapide */
+.quick-publish {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  color: var(--white);
+  text-align: center;
+}
+
+.quick-publish h3 {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: var(--space-2);
+}
+
+.quick-publish p {
+  font-size: var(--font-size-sm);
+  color: rgba(255,255,255,0.8);
+  margin-bottom: var(--space-5);
+}
+
+.quick-publish .publish-icon {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-4);
+}
+
+/* Profil rapide dans le dashboard */
+.profile-quick-card {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  text-align: center;
+}
+
+.profile-quick-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  margin: 0 auto var(--space-4);
+  position: relative;
+}
+
+.profile-quick-name {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: var(--space-1);
+}
+
+.profile-quick-university {
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+  margin-bottom: var(--space-4);
+}
+
+.profile-quick-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--gray-100);
+}
+
+.profile-quick-stat {
+  text-align: center;
+}
+
+.profile-quick-stat .pqs-value {
+  font-size: var(--font-size-xl);
+  font-weight: 900;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.profile-quick-stat .pqs-label {
+  font-size: 10px;
+  color: var(--gray-500);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: var(--space-1);
+}
+
+
+/* ============================================================
+   MODAL DE CONFIRMATION DE SUPPRESSION
+   ============================================================ */
+.confirm-modal .modal-icon {
+  width: 64px;
+  height: 64px;
+  background: var(--accent-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  margin: 0 auto var(--space-5);
+}
+
+.confirm-modal .modal-title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: var(--space-3);
+  text-align: center;
+}
+
+.confirm-modal .modal-desc {
+  color: var(--gray-600);
+  text-align: center;
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-6);
+}
+
+.confirm-modal .modal-actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+}
+
+
+/* ============================================================
+   PAGE DE SECTION (vue d'un onglet spécifique)
+   ============================================================ */
+.dashboard-section {
+  display: none;             /* Cachée par défaut */
+}
+
+.dashboard-section.active {
+  display: block;            /* Visible quand active */
+  animation: fadeIn 0.3s ease;
+}
+
+/* Titre de section */
+.section-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.section-page-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--gray-900);
+}
+
+
+/* ============================================================
+   ONGLET MOBILE — Navigation du dashboard sur mobile
+   (remplace la sidebar sur petit écran)
+   ============================================================ */
+.mobile-nav-tabs {
+  display: none;             /* Caché sur desktop */
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  overflow-x: auto;
+  position: sticky;
+  top: var(--navbar-height);
+  z-index: 100;
+}
+
+.mobile-nav-tabs ul {
+  display: flex;
+  padding: 0 var(--space-4);
+  white-space: nowrap;
+}
+
+.mobile-nav-tabs li a {
+  display: inline-block;
+  padding: var(--space-4) var(--space-4);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--gray-500);
+  border-bottom: 3px solid transparent;
+  transition: var(--transition-fast);
+  text-decoration: none;
+}
+
+.mobile-nav-tabs li a.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+
+/* ============================================================
+   RESPONSIVE DASHBOARD
+   ============================================================ */
+@media (max-width: 1024px) {
+  .dashboard-content {
+    grid-template-columns: 1fr;  /* Une seule colonne */
+  }
+
+  .dashboard-sidebar-panel {
+    order: -1;   /* Panneau latéral en premier sur tablette */
+  }
+}
+
+@media (max-width: 768px) {
+  /* Cacher la sidebar, montrer la navigation par onglets */
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .mobile-nav-tabs {
+    display: block;
+  }
+
+  .dashboard-main {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .stats-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .dashboard-greeting {
+    font-size: var(--font-size-2xl);
+  }
+
+  /* Tableau responsive : affichage en carte */
+  .annonces-table thead {
+    display: none;
+  }
+
+  .annonces-table tr {
+    display: block;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-3);
+    padding: var(--space-4);
+    background: var(--white);
+  }
+
+  .annonces-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: var(--font-size-xs);
+  }
+
+  .annonces-table td:last-child {
+    border-bottom: none;
+    padding-top: var(--space-3);
+  }
+
+  .annonces-table td::before {
+    content: attr(data-label);   /* Affiche le nom de la colonne */
+    font-weight: 700;
+    color: var(--gray-500);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: var(--space-2);
+    white-space: nowrap;
+  }
+
+  .table-title {
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-main {
+    padding: var(--space-4) var(--space-3);
+  }
+}

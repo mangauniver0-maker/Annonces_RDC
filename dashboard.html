@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<!--
+  dashboard.html — Tableau de bord étudiant
+  ============================================================
+  Page principale de l'espace personnel de l'étudiant connecté.
+  
+  Sections :
+  - Sidebar : navigation latérale + profil rapide
+  - Vue d'ensemble : stats + annonces récentes + publication rapide
+  - Mes annonces : tableau complet avec actions modifier/supprimer
+  
+  Protégé : redirige vers login.html si non connecté.
+  Scripts : main.js, annonces.js, dashboard.js
+  ============================================================
+-->
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tableau de bord — AnnonceRDC</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/dashboard.css" />
+</head>
+<body>
+
+  <!-- Navbar simplifiée pour le dashboard -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      
+      <a href="./index.html" class="navbar-brand">
+        <div class="logo-icon">★</div>
+        <div class="logo-text">
+          <span class="brand-name">AnnonceRDC</span>
+          <span class="brand-tagline">La voix des étudiants congolais</span>
+        </div>
+      </a>
+
+      <div class="navbar-nav">
+        <a href="./index.html" class="nav-link">🏠 Accueil</a>
+        <a href="./annonce.html" class="nav-link">+ Publier</a>
+      </div>
+
+      <div class="navbar-actions">
+        <a href="./profil.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--gray-700);font-size:0.875rem;font-weight:600;">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;" id="navAvatar">?</div>
+          <span id="navUserName">Mon profil</span>
+        </a>
+        <button class="btn btn-ghost btn-sm" data-action="logout">Déconnexion</button>
+      </div>
+
+      <button class="navbar-toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Navigation mobile par onglets -->
+  <div class="mobile-nav-tabs">
+    <ul>
+      <li><a href="#" data-section="vue-ensemble" class="active">📊 Tableau de bord</a></li>
+      <li><a href="#" data-section="mes-annonces">📋 Mes annonces</a></li>
+      <li><a href="./annonce.html">+ Publier</a></li>
+      <li><a href="./profil.html">👤 Profil</a></li>
+    </ul>
+  </div>
+
+
+  <!-- ============================================================
+       LAYOUT PRINCIPAL DU DASHBOARD
+       Sidebar à gauche + contenu principal à droite
+  ============================================================ -->
+  <div class="dashboard-layout">
+
+    <!-- ============================================================
+         SIDEBAR — Navigation latérale
+    ============================================================ -->
+    <aside class="sidebar">
+
+      <!-- Profil de l'utilisateur dans la sidebar -->
+      <div class="sidebar-profile">
+        <div class="sidebar-avatar" id="sidebarAvatar">?</div>
+        <div class="sidebar-user-name" id="sidebarUserName">Chargement…</div>
+        <div class="sidebar-user-info" id="sidebarUserInfo"></div>
+      </div>
+
+      <!-- Navigation principale -->
+      <nav class="sidebar-nav">
+        
+        <div class="sidebar-section-title">Principal</div>
+        
+        <a href="#" class="sidebar-link active" data-section="vue-ensemble">
+          <span class="sidebar-link-icon">📊</span>
+          Vue d'ensemble
+        </a>
+        
+        <a href="#" class="sidebar-link" data-section="mes-annonces">
+          <span class="sidebar-link-icon">📋</span>
+          Mes annonces
+          <span class="sidebar-badge" id="sidebarAnnoncesBadge">0</span>
+        </a>
+
+        <div class="sidebar-section-title">Actions</div>
+        
+        <a href="./annonce.html" class="sidebar-link">
+          <span class="sidebar-link-icon">✏️</span>
+          Publier une annonce
+        </a>
+
+        <a href="./index.html" class="sidebar-link">
+          <span class="sidebar-link-icon">🔍</span>
+          Parcourir les annonces
+        </a>
+
+        <div class="sidebar-section-title">Compte</div>
+        
+        <a href="./profil.html" class="sidebar-link">
+          <span class="sidebar-link-icon">👤</span>
+          Mon profil
+        </a>
+
+      </nav>
+
+      <!-- Bas de la sidebar — bouton de déconnexion -->
+      <div class="sidebar-footer">
+        <button class="sidebar-logout" data-action="logout">
+          <span style="font-style:normal;">🚪</span>
+          Se déconnecter
+        </button>
+      </div>
+
+    </aside>
+
+
+    <!-- ============================================================
+         CONTENU PRINCIPAL DU DASHBOARD
+    ============================================================ -->
+    <main class="dashboard-main">
+
+      <!-- En-tête de bienvenue -->
+      <div class="dashboard-header">
+        <div>
+          <h1 class="dashboard-greeting">
+            Bonjour, <span id="dashboardGreetingName">…</span> 👋
+          </h1>
+          <p class="dashboard-date" id="dashboardDate"></p>
+        </div>
+        <a href="./annonce.html" class="btn btn-primary">
+          + Publier une annonce
+        </a>
+      </div>
+
+
+      <!-- ============================================================
+           SECTION : VUE D'ENSEMBLE
+      ============================================================ -->
+      <div class="dashboard-section active" id="section-vue-ensemble">
+
+        <!-- Cartes de statistiques -->
+        <div class="stats-cards">
+
+          <div class="stat-card">
+            <div class="stat-card-icon blue">📋</div>
+            <div class="stat-card-info">
+              <div class="stat-card-value" id="statMesAnnonces">0</div>
+              <div class="stat-card-label">Mes annonces</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-icon yellow">📢</div>
+            <div class="stat-card-info">
+              <div class="stat-card-value" id="statTotalAnnonces">0</div>
+              <div class="stat-card-label">Total sur la plateforme</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-icon green">📅</div>
+            <div class="stat-card-info">
+              <div class="stat-card-value" id="statCeMois">0</div>
+              <div class="stat-card-label">Publiées ce mois</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-icon red">🏷️</div>
+            <div class="stat-card-info">
+              <div class="stat-card-value" id="statCategories">0</div>
+              <div class="stat-card-label">Catégories utilisées</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Contenu en deux colonnes -->
+        <div class="dashboard-content">
+
+          <!-- Colonne principale : annonces récentes -->
+          <div>
+            <div class="content-block">
+              <div class="content-block-header">
+                <h2 class="content-block-title">Mes annonces récentes</h2>
+                <a href="#" class="btn btn-ghost btn-sm" data-section="mes-annonces">
+                  Voir tout →
+                </a>
+              </div>
+              <div class="content-block-body">
+                <div class="annonces-table-wrapper">
+                  <table class="annonces-table">
+                    <thead>
+                      <tr>
+                        <th>Titre</th>
+                        <th>Catégorie</th>
+                        <th>Prix</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="annoncesTableBody">
+                      <!-- Rempli par dashboard.js -->
+                      <tr>
+                        <td colspan="5" style="text-align:center;padding:32px;color:var(--gray-400);">
+                          <div class="spinner" style="margin:0 auto 12px;"></div>
+                          <div>Chargement…</div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Colonne latérale : publication rapide + profil -->
+          <div class="dashboard-sidebar-panel">
+
+            <!-- Carte de publication rapide -->
+            <div class="quick-publish">
+              <div class="publish-icon">📢</div>
+              <h3>Publier une annonce</h3>
+              <p>Partagez vos offres avec des milliers d'étudiants congolais en quelques clics.</p>
+              <a href="./annonce.html" class="btn btn-secondary btn-full">
+                + Nouvelle annonce
+              </a>
+            </div>
+
+            <!-- Carte de profil rapide -->
+            <div class="profile-quick-card">
+              <div class="profile-quick-avatar" id="profileQuickAvatar">?</div>
+              <div class="profile-quick-name" id="profileQuickName">…</div>
+              <div class="profile-quick-university" id="profileQuickUniversity"></div>
+              <div style="font-size:0.8125rem;color:var(--gray-400);" id="profileQuickYear"></div>
+              
+              <div class="profile-quick-stats">
+                <div class="profile-quick-stat">
+                  <div class="pqs-value" id="profileStatAnnonces">0</div>
+                  <div class="pqs-label">Annonces</div>
+                </div>
+                <div class="profile-quick-stat">
+                  <div class="pqs-value" id="profileStatMois">0</div>
+                  <div class="pqs-label">Ce mois</div>
+                </div>
+              </div>
+
+              <a href="./profil.html" class="btn btn-outline btn-full btn-sm" style="margin-top:16px;">
+                ✏️ Modifier mon profil
+              </a>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- ============================================================
+           SECTION : MES ANNONCES
+           Vue complète avec tableau + grille de cartes
+      ============================================================ -->
+      <div class="dashboard-section" id="section-mes-annonces">
+
+        <div class="section-page-header">
+          <h2 class="section-page-title">📋 Mes annonces</h2>
+          <a href="./annonce.html" class="btn btn-primary">+ Publier une annonce</a>
+        </div>
+
+        <!-- Grille de cartes (alternative au tableau) -->
+        <div class="annonces-grid" id="mesAnnoncesGrid" style="margin-bottom:32px;">
+          <!-- Rempli par dashboard.js -->
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <script src="./js/main.js"></script>
+  <script src="./js/annonces.js"></script>
+  <script src="./js/dashboard.js"></script>
+
+</body>
+</html>

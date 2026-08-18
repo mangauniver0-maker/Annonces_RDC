@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<!--
+  login.html — Page de connexion
+  ============================================================
+  Permet à un étudiant déjà inscrit de se connecter.
+  
+  Fonctionnalités :
+  - Formulaire email + mot de passe
+  - Validation en temps réel
+  - Affichage/masquage du mot de passe
+  - Redirection automatique si déjà connecté
+  - Lien vers la page d'inscription
+  
+  Scripts : main.js, auth.js
+  ============================================================
+-->
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connexion — AnnonceRDC</title>
+  <meta name="description" content="Connectez-vous à votre compte AnnonceRDC pour gérer vos annonces." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/forms.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       PAGE DE CONNEXION
+       Layout deux colonnes : formulaire à gauche, décoration à droite
+  ============================================================ -->
+  <div class="auth-page">
+
+    <!-- COLONNE GAUCHE — Formulaire de connexion -->
+    <div class="auth-form-col">
+      <div class="auth-box animate-fadeIn">
+
+        <!-- Lien retour vers l'accueil -->
+        <a href="./index.html" class="auth-back-link">
+          ← Retour à l'accueil
+        </a>
+
+        <!-- Logo -->
+        <a href="./index.html" class="auth-logo">
+          <div class="logo-icon">★</div>
+          <div class="logo-name">AnnonceRDC</div>
+        </a>
+
+        <!-- Titre du formulaire -->
+        <h1 class="auth-title">Content de vous revoir !</h1>
+        <p class="auth-subtitle">
+          Connectez-vous pour accéder à votre tableau de bord et gérer vos annonces.
+        </p>
+
+        <!-- ============================================================
+             FORMULAIRE DE CONNEXION
+             Soumission gérée par auth.js → handleLogin()
+        ============================================================ -->
+        <form id="loginForm" novalidate>
+
+          <!-- Champ Email -->
+          <div class="form-group">
+            <label class="form-label" for="email">
+              Adresse email <span class="required">*</span>
+            </label>
+            <div class="input-icon-wrapper">
+              <!-- Icône email -->
+              <span class="input-icon">✉️</span>
+              <input 
+                type="email"
+                id="email"
+                name="email"
+                class="form-control"
+                placeholder="votre.email@universite.cd"
+                autocomplete="email"
+                required
+              />
+            </div>
+            <!-- Le message d'erreur sera inséré ici par auth.js -->
+            <span class="form-error" id="emailError"></span>
+          </div>
+
+          <!-- Champ Mot de passe -->
+          <div class="form-group">
+            <label class="form-label" for="password">
+              Mot de passe <span class="required">*</span>
+            </label>
+            <div class="input-icon-wrapper" style="position:relative;">
+              <!-- Icône cadenas -->
+              <span class="input-icon">🔒</span>
+              <input 
+                type="password"
+                id="password"
+                name="password"
+                class="form-control"
+                placeholder="Votre mot de passe"
+                autocomplete="current-password"
+                required
+              />
+              <!-- Bouton afficher/masquer le mot de passe -->
+              <button type="button" class="password-toggle" id="togglePassword" title="Afficher le mot de passe">
+                👁️
+              </button>
+            </div>
+            <span class="form-error" id="passwordError"></span>
+          </div>
+
+          <!-- Checkbox "Se souvenir de moi" -->
+          <div class="form-group">
+            <label class="form-check">
+              <input type="checkbox" id="rememberMe" />
+              <span class="form-check-label">Se souvenir de moi</span>
+            </label>
+          </div>
+
+          <!-- Bouton de soumission -->
+          <button 
+            type="submit" 
+            id="submitBtn"
+            class="btn btn-primary btn-full btn-lg"
+            style="margin-top: 8px;"
+          >
+            Se connecter
+          </button>
+
+        </form>
+
+        <!-- Séparateur -->
+        <div class="auth-divider">
+          <span>ou</span>
+        </div>
+
+        <!-- Compte de démonstration -->
+        <div style="background: var(--gray-50); border: 1px dashed var(--gray-300); border-radius: var(--radius-lg); padding: 16px; text-align: center; margin-bottom: 16px;">
+          <div style="font-size: 0.8125rem; font-weight: 700; color: var(--gray-700); margin-bottom: 8px;">
+            🧪 Compte de démonstration
+          </div>
+          <div style="font-size: 0.8125rem; color: var(--gray-600);">
+            Email : <strong>jp.kabila@demo.cd</strong><br>
+            Mot de passe : <strong>demo1234</strong>
+          </div>
+          <!-- Bouton pour remplir automatiquement les champs demo -->
+          <button 
+            type="button"
+            class="btn btn-ghost btn-sm"
+            style="margin-top: 8px; font-size: 0.75rem;"
+            onclick="document.getElementById('email').value='jp.kabila@demo.cd'; document.getElementById('password').value='demo1234';"
+          >
+            Remplir automatiquement →
+          </button>
+        </div>
+
+        <!-- Lien vers l'inscription -->
+        <div class="auth-footer-link">
+          Pas encore de compte ?
+          <a href="./register.html">Créer un compte gratuit</a>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- COLONNE DROITE — Décoration visuelle (cachée sur mobile) -->
+    <div class="auth-deco-col">
+      <div class="auth-deco-content">
+        
+        <!-- Icône principale -->
+        <div class="auth-deco-icon">🎓</div>
+        
+        <!-- Texte de présentation -->
+        <h2 class="auth-deco-title">
+          Bienvenue sur<br><span>AnnonceRDC</span>
+        </h2>
+        <p class="auth-deco-desc">
+          La plateforme #1 des étudiants congolais pour trouver 
+          des cours, logements, stages et bien plus encore.
+        </p>
+
+        <!-- Liste des avantages de la plateforme -->
+        <div class="auth-deco-features">
+          
+          <div class="auth-deco-feature">
+            <span class="feat-icon">📚</span>
+            <span class="feat-text">Cours et tutorats entre étudiants</span>
+          </div>
+          
+          <div class="auth-deco-feature">
+            <span class="feat-icon">🏠</span>
+            <span class="feat-text">Logements et colocations proches des campus</span>
+          </div>
+          
+          <div class="auth-deco-feature">
+            <span class="feat-icon">💼</span>
+            <span class="feat-text">Offres de stage et d'emploi étudiant</span>
+          </div>
+          
+          <div class="auth-deco-feature">
+            <span class="feat-icon">🆓</span>
+            <span class="feat-text">100% gratuit pour tous les étudiants</span>
+          </div>
+          
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- Scripts JavaScript — main.js avant auth.js -->
+  <script src="./js/main.js"></script>
+  <script src="./js/auth.js"></script>
+
+</body>
+</html>
