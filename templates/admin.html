@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administration — AnnonceRDC</title>
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/dashboard.css" />
+  <link rel="stylesheet" href="./css/admin.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="./index.html" class="navbar-brand"><div class="logo-icon">★</div><div class="logo-text"><span class="brand-name">AnnonceRDC</span><span class="brand-tagline">Administration</span></div></a>
+      <div class="navbar-actions"><a href="./index.html" class="btn btn-ghost btn-sm">Voir le site</a><button class="btn btn-ghost btn-sm" data-action="logout">Déconnexion</button></div>
+    </div>
+  </nav>
+  <main class="admin-page container">
+    <div class="admin-heading">
+      <div><span class="section-eyebrow">Espace sécurisé</span><h1>Centre d'administration</h1><p>Supervisez la communauté et gardez les annonces fiables.</p></div>
+      <button type="button" class="btn btn-primary" id="refreshAdminBtn">↻ Actualiser</button>
+    </div>
+    <div class="stats-cards admin-stats">
+      <div class="stat-card"><div class="stat-card-icon blue">👥</div><div class="stat-card-info"><div class="stat-card-value" id="adminUsersCount">0</div><div class="stat-card-label">Membres</div></div></div>
+      <div class="stat-card"><div class="stat-card-icon yellow">📢</div><div class="stat-card-info"><div class="stat-card-value" id="adminAdsCount">0</div><div class="stat-card-label">Annonces</div></div></div>
+      <div class="stat-card"><div class="stat-card-icon green">🎓</div><div class="stat-card-info"><div class="stat-card-value" id="adminUniversitiesCount">0</div><div class="stat-card-label">Universités</div></div></div>
+    </div>
+    <section class="admin-grid">
+      <div class="content-block"><div class="content-block-header"><h2 class="content-block-title">Membres</h2></div><div class="content-block-body admin-table-wrap"><table class="annonces-table"><thead><tr><th>Profil</th><th>Université</th><th>Rôle</th><th>Inscription</th><th></th></tr></thead><tbody id="adminUsersTable"></tbody></table></div></div>
+      <div class="content-block"><div class="content-block-header"><h2 class="content-block-title">Annonces publiées</h2></div><div class="content-block-body admin-table-wrap"><table class="annonces-table"><thead><tr><th>Titre</th><th>Auteur</th><th>Catégorie</th><th>Date</th><th></th></tr></thead><tbody id="adminAdsTable"></tbody></table></div></div>
+    </section>
+  </main>
+  <script src="./js/main.js"></script>
+  <script src="./js/admin.js"></script>
+</body>
+</html>

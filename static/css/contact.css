@@ -1,0 +1,421 @@
+/* ============================================================
+   contact.css — Styles de la page de contact
+   ============================================================
+
+   Ce fichier contient tous les styles propres à contact.html :
+   - Bandeau hero de la page contact
+   - Grille deux colonnes (formulaire + infos)
+   - Carte formulaire et carte infos
+   - Compteur de caractères
+   - Spinner du bouton
+   - Liste des coordonnées
+   - Liens réseaux sociaux
+   - Accordéon FAQ
+   - Responsive mobile
+
+   Dépend de style.css pour les variables CSS et classes utilitaires.
+   ============================================================ */
+
+
+/* ============================================================
+   HERO DE LA PAGE CONTACT
+   Bandeau bleu avec le titre "Contactez-nous".
+   Reprend les couleurs du drapeau RDC (bleu primaire).
+============================================================ */
+
+.contact-hero {
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,       /* Bleu RDC */
+    #0055cc 60%,
+    var(--accent) 100%        /* Jaune RDC en touche finale */
+  );
+  color: var(--white);
+  text-align: center;
+  padding: var(--space-16) var(--space-4) var(--space-12);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Cercle décoratif en arrière-plan (effet visuel) */
+.contact-hero::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+
+/* Badge au-dessus du titre */
+.page-header-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  padding: var(--space-1) var(--space-4);
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+  backdrop-filter: blur(4px);
+}
+
+/* Titre principal de la page */
+.page-header-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  line-height: 1.15;
+  margin: 0 0 var(--space-4);
+  color: var(--white);
+}
+
+/* Sous-titre descriptif */
+.page-header-desc {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+
+/* ============================================================
+   SECTION PRINCIPALE — Grille deux colonnes
+   Layout responsive : deux colonnes sur desktop,
+   une colonne empilée sur mobile.
+============================================================ */
+
+.contact-section {
+  padding: var(--space-16) var(--space-4);
+  background: var(--gray-50);
+  min-height: 60vh;
+}
+
+/* Grille principale : 60% formulaire / 40% infos */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;  /* Formulaire large, infos fixe */
+  gap: var(--space-8);
+  align-items: start;
+}
+
+
+/* ============================================================
+   COLONNE GAUCHE — Carte du formulaire
+============================================================ */
+
+/* Carte blanche arrondie qui contient le formulaire */
+.contact-form-card {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: var(--space-10);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--gray-200);
+}
+
+/* Titre de la carte formulaire */
+.contact-form-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin: 0 0 var(--space-2);
+}
+
+/* Texte descriptif sous le titre */
+.contact-form-desc {
+  font-size: 0.9rem;
+  color: var(--gray-500);
+  margin: 0 0 var(--space-6);
+}
+
+/* Étoile rouge pour les champs obligatoires */
+.required-star {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+/* Ligne avec deux champs côte à côte (Nom + Email) */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+/* Textarea avec hauteur minimale et redimensionnement vertical */
+.form-textarea {
+  resize: vertical;
+  min-height: 140px;
+  font-family: inherit;
+  line-height: 1.6;
+}
+
+/* Compteur de caractères sous le textarea */
+.char-counter {
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  margin-top: var(--space-1);
+  font-variant-numeric: tabular-nums;  /* Chiffres à largeur fixe */
+}
+
+/* Bouton d'envoi — pleine largeur avec icône */
+.contact-submit-btn {
+  margin-top: var(--space-2);
+  height: 52px;
+  font-size: 1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+/* Spinner animé dans le bouton pendant l'envoi */
+.btn-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.4);
+  border-top-color: var(--white);
+  border-radius: 50%;
+  /* Animation de rotation infinie */
+  animation: spin 0.7s linear infinite;
+}
+
+/* Keyframe de la rotation du spinner */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+
+/* ============================================================
+   COLONNE DROITE — Cartes d'informations
+============================================================ */
+
+/* Carte d'information générique (coordonnées, réseaux, FAQ) */
+.contact-info-card {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--gray-200);
+}
+
+/* Titre de chaque carte d'info */
+.info-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin: 0 0 var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 2px solid var(--gray-100);
+}
+
+/* Liste des coordonnées (email, téléphone, adresse, horaires) */
+.contact-info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Chaque élément de la liste : icône + texte */
+.contact-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+/* Icône de chaque info */
+.info-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Label gris en petites majuscules */
+.info-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+/* Valeur principale de l'info (email, numéro, etc.) */
+.info-value {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--gray-700);
+  line-height: 1.5;
+}
+
+
+/* ============================================================
+   RÉSEAUX SOCIAUX — Grille de liens
+============================================================ */
+
+/* Grille 2×2 pour les 4 réseaux sociaux */
+.social-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+/* Chaque lien réseau social */
+.social-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  text-decoration: none;
+  color: var(--gray-700);
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.social-link:hover {
+  background: var(--primary-50, #eff6ff);
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+/* Icône du réseau social */
+.social-icon {
+  font-size: 1.1rem;
+}
+
+
+/* ============================================================
+   FAQ — Accordéon
+   Utilise l'élément HTML natif <details>/<summary>
+   pour un accordéon sans JavaScript.
+============================================================ */
+
+/* Conteneur de la liste FAQ */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Chaque item FAQ */
+.faq-item {
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* Question (cliquable) */
+.faq-question {
+  padding: var(--space-3) var(--space-4);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  cursor: pointer;
+  list-style: none;           /* Retire le triangle natif */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--gray-50);
+  transition: background 0.15s;
+  user-select: none;
+}
+
+/* Supprimer le marqueur de liste par défaut sur Firefox */
+.faq-question::-webkit-details-marker { display: none; }
+
+/* Flèche chevron à droite de la question */
+.faq-question::after {
+  content: '▸';
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  transition: transform 0.2s;
+}
+
+/* Quand l'accordéon est ouvert, la flèche tourne */
+.faq-item[open] .faq-question::after {
+  transform: rotate(90deg);
+}
+
+/* Fond légèrement différent quand ouvert */
+.faq-item[open] .faq-question {
+  background: #eff6ff;
+  color: var(--primary);
+}
+
+/* Réponse cachée (visible quand ouvert) */
+.faq-answer {
+  padding: var(--space-3) var(--space-4);
+  font-size: 0.85rem;
+  color: var(--gray-600);
+  line-height: 1.6;
+  background: var(--white);
+  border-top: 1px solid var(--gray-100);
+  margin: 0;
+}
+
+
+/* ============================================================
+   LIEN ACTIF DANS LA NAVBAR
+   Souligne le lien "Contact" quand on est sur cette page.
+============================================================ */
+
+.nav-link.active {
+  color: var(--primary) !important;
+  font-weight: 700;
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 2px;
+}
+
+
+/* ============================================================
+   RESPONSIVE — Adaptations mobiles
+   En dessous de 768px, les colonnes s'empilent verticalement.
+============================================================ */
+
+@media (max-width: 900px) {
+  /* Passer à une seule colonne */
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* La colonne infos passe en dessous du formulaire */
+  .contact-info-col {
+    order: 2;  /* Afficher après le formulaire */
+  }
+}
+
+@media (max-width: 600px) {
+  /* Réduire le padding de la carte formulaire */
+  .contact-form-card {
+    padding: var(--space-6);
+  }
+
+  /* Empiler Nom et Email sur mobile */
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  /* Titre plus petit */
+  .contact-form-title {
+    font-size: 1.25rem;
+  }
+
+  /* Réseaux sociaux en colonne unique sur très petit écran */
+  .social-links {
+    grid-template-columns: 1fr;
+  }
+}
